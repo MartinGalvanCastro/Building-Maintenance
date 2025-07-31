@@ -1,6 +1,7 @@
 package com.martin.buildingmaintenance.adapters.in.web;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jws;
 import com.martin.buildingmaintenance.security.JwtTokenProvider;
 import org.mockito.Mockito;
@@ -20,8 +21,7 @@ public class TestUtils {
         when(jwtTokenProvider.validateToken(anyString())).thenAnswer(invocation -> {
             String t = invocation.getArgument(0);
             if (token.equals(t)) return jws;
-            throw new RuntimeException("Invalid token");
+            throw new JwtException("Invalid token");
         });
     }
 }
-

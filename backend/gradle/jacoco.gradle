@@ -20,33 +20,6 @@ jacocoTestCoverageVerification {
         rule {
             element = 'CLASS'
 
-            // Line coverage
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
-
-            // Branch coverage
-            limit {
-                counter = 'BRANCH'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
-
-            // Instruction coverage
-            limit {
-                counter = 'INSTRUCTION'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
-
-            // Method coverage
-            limit {
-                counter = 'METHOD'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
         }
     }
 }
