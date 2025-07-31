@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: building-maintenance-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    username: myuser
+    password: secret
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+security:
+  jwt:
+    secret: kJ3fSxv5nZ8pT7cW+eLQ2R1yX5hZ9qU0rM4bN6oP8s=
+    expiration-ms: 3600000
+    header: Authorization
+    prefix: Bearer
+  sudo:
+    username: your-admin@example.com
+    password: superSecret123
+
+server:
+  servlet:
+    context-path: /api
+
+
+management:
+  server:
+    base-path: /
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health
+      discovery:
+        enabled: false
+
+springdoc:
+  show-actuator: true
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
