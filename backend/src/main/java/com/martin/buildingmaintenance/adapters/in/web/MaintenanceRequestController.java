@@ -1,8 +1,8 @@
 package com.martin.buildingmaintenance.adapters.in.web;
 
+import com.martin.buildingmaintenance.application.dto.CreateMaintenanceRequestDto;
 import com.martin.buildingmaintenance.application.dto.DeleteResponseDto;
 import com.martin.buildingmaintenance.application.dto.MaintenanceRequestDto;
-import com.martin.buildingmaintenance.application.dto.CreateMaintenanceRequestDto;
 import com.martin.buildingmaintenance.application.dto.UpdateRequestDto;
 import com.martin.buildingmaintenance.application.port.in.AdminManagementService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,9 +13,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -134,7 +134,10 @@ public class MaintenanceRequestController {
     @ApiResponse(
             responseCode = "201",
             description = "Maintenance request created",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = MaintenanceRequestDto.class)))
+            content =
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = MaintenanceRequestDto.class)))
     @PostMapping
     public MaintenanceRequestDto create(@Valid @RequestBody CreateMaintenanceRequestDto dto) {
         return adminSvc.createRequest(dto);
@@ -147,13 +150,17 @@ public class MaintenanceRequestController {
         @ApiResponse(
                 responseCode = "200",
                 description = "Maintenance request updated",
-                content = @Content(mediaType = "application/json", schema = @Schema(implementation = MaintenanceRequestDto.class))),
+                content =
+                        @Content(
+                                mediaType = "application/json",
+                                schema = @Schema(implementation = MaintenanceRequestDto.class))),
         @ApiResponse(responseCode = "404", description = "Maintenance request not found")
     })
     @PutMapping("/{id}")
     public MaintenanceRequestDto update(
             @Parameter(description = "UUID of the maintenance request", required = true)
-            @PathVariable UUID id,
+                    @PathVariable
+                    UUID id,
             @Valid @RequestBody UpdateRequestDto dto) {
         return adminSvc.updateRequest(id, dto);
     }

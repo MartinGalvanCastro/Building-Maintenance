@@ -101,9 +101,10 @@ public class AuthController {
     @GetMapping("/validate")
     @ResponseStatus(HttpStatus.OK)
     public void validateToken(@RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader != null && authorizationHeader.startsWith("Bearer ")
-                ? authorizationHeader.substring(7)
-                : authorizationHeader;
+        String token =
+                authorizationHeader != null && authorizationHeader.startsWith("Bearer ")
+                        ? authorizationHeader.substring(7)
+                        : authorizationHeader;
         authService.validateToken(token);
     }
 }

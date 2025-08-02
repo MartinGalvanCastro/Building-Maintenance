@@ -39,8 +39,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-
-    public String generateToken(User user){
+    public String generateToken(User user) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + jwtExpirationMs);
 
@@ -54,7 +53,6 @@ public class JwtTokenProvider {
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
-
 
     public Jws<Claims> validateToken(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);

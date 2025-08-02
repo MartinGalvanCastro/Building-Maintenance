@@ -1,7 +1,6 @@
 package com.martin.buildingmaintenance.application.dto;
 
 import com.martin.buildingmaintenance.domain.model.Specialization;
-
 import java.util.List;
 import java.util.UUID;
 

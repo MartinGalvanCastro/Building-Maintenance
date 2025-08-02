@@ -5,17 +5,17 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.martin.buildingmaintenance.application.dto.CancelResponseDto;
+import com.martin.buildingmaintenance.application.dto.CreateRequestDto;
+import com.martin.buildingmaintenance.application.dto.MaintenanceRequestDto;
+import com.martin.buildingmaintenance.application.dto.UpdateRequestDto;
+import com.martin.buildingmaintenance.application.exception.NotFoundException;
 import com.martin.buildingmaintenance.application.port.in.ResidentRequestService;
 import com.martin.buildingmaintenance.domain.model.Specialization;
 import com.martin.buildingmaintenance.infrastructure.config.SecurityConfig;
 import com.martin.buildingmaintenance.infrastructure.persistence.adapter.BlacklistedTokenAdapter;
 import com.martin.buildingmaintenance.security.JwtTokenProvider;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.martin.buildingmaintenance.application.dto.MaintenanceRequestDto;
-import com.martin.buildingmaintenance.application.dto.CreateRequestDto;
-import com.martin.buildingmaintenance.application.dto.UpdateRequestDto;
-import com.martin.buildingmaintenance.application.dto.CancelResponseDto;
-import com.martin.buildingmaintenance.application.exception.NotFoundException;
 import io.jsonwebtoken.JwtException;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -110,8 +110,7 @@ class ResidentRequestControllerTest {
         @MethodSource("roles")
         void user_can_get_specific_request(String role, UUID userId) throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, role, userId, VALID_TOKEN);
-            var response =
-                    mock(MaintenanceRequestDto.class);
+            var response = mock(MaintenanceRequestDto.class);
             when(svc.getMyRequest(userId, REQUEST_ID)).thenReturn(response);
             mockMvc.perform(
                             get("/residents/" + userId + "/requests/" + REQUEST_ID)
@@ -124,8 +123,7 @@ class ResidentRequestControllerTest {
         void get_request_not_found_returns_404() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", RESIDENT_ID, VALID_TOKEN);
             when(svc.getMyRequest(RESIDENT_ID, REQUEST_ID))
-                    .thenThrow(
-                            new NotFoundException("Request not found"));
+                    .thenThrow(new NotFoundException("Request not found"));
             mockMvc.perform(
                             get("/residents/" + RESIDENT_ID + "/requests/" + REQUEST_ID)
                                     .header("Authorization", "Bearer " + VALID_TOKEN))
@@ -172,11 +170,8 @@ class ResidentRequestControllerTest {
         @MethodSource("roles")
         void user_can_create_request(String role, UUID userId) throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, role, userId, VALID_TOKEN);
-            var dto =
-                    new CreateRequestDto(
-                            "Fix light", SPECIALIZATION, FUTURE_DATE);
-            var response =
-                    mock(MaintenanceRequestDto.class);
+            var dto = new CreateRequestDto("Fix light", SPECIALIZATION, FUTURE_DATE);
+            var response = mock(MaintenanceRequestDto.class);
             when(svc.createRequest(eq(userId), any())).thenReturn(response);
             mockMvc.perform(
                             post("/residents/" + userId + "/requests")
@@ -204,9 +199,7 @@ class ResidentRequestControllerTest {
         void create_request_invalid_token_returns_403() throws Exception {
             when(jwtTokenProvider.validateToken(anyString()))
                     .thenThrow(new JwtException("Invalid token"));
-            var dto =
-                    new CreateRequestDto(
-                            "Fix light", SPECIALIZATION, FUTURE_DATE);
+            var dto = new CreateRequestDto("Fix light", SPECIALIZATION, FUTURE_DATE);
             mockMvc.perform(
                             post("/residents/" + RESIDENT_ID + "/requests")
                                     .header("Authorization", "Bearer invalid-token")
@@ -218,9 +211,7 @@ class ResidentRequestControllerTest {
 
         @Test
         void create_request_missing_token_returns_403() throws Exception {
-            var dto =
-                    new CreateRequestDto(
-                            "Fix light", SPECIALIZATION, FUTURE_DATE);
+            var dto = new CreateRequestDto("Fix light", SPECIALIZATION, FUTURE_DATE);
             mockMvc.perform(
                             post("/residents/" + RESIDENT_ID + "/requests")
                                     .contentType("application/json")
@@ -232,9 +223,7 @@ class ResidentRequestControllerTest {
         @Test
         void create_request_non_resident_returns_403() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "TECHNICIAN", RESIDENT_ID, VALID_TOKEN);
-            var dto =
-                    new CreateRequestDto(
-                            "Fix light", SPECIALIZATION, FUTURE_DATE);
+            var dto = new CreateRequestDto("Fix light", SPECIALIZATION, FUTURE_DATE);
             mockMvc.perform(
                             post("/residents/" + RESIDENT_ID + "/requests")
                                     .header("Authorization", "Bearer " + VALID_TOKEN)
@@ -256,11 +245,8 @@ class ResidentRequestControllerTest {
         @MethodSource("roles")
         void user_can_update_request(String role, UUID userId) throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, role, userId, VALID_TOKEN);
-            var dto =
-                    new UpdateRequestDto(
-                            "Fix outlet", FUTURE_DATE);
-            var response =
-                    mock(MaintenanceRequestDto.class);
+            var dto = new UpdateRequestDto("Fix outlet", FUTURE_DATE);
+            var response = mock(MaintenanceRequestDto.class);
             when(svc.updateMyRequest(eq(userId), eq(REQUEST_ID), any())).thenReturn(response);
             mockMvc.perform(
                             patch("/residents/" + userId + "/requests/" + REQUEST_ID)
@@ -274,12 +260,9 @@ class ResidentRequestControllerTest {
         @Test
         void update_request_not_found_returns_404() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", RESIDENT_ID, VALID_TOKEN);
-            var dto =
-                    new UpdateRequestDto(
-                            "Fix outlet", FUTURE_DATE);
+            var dto = new UpdateRequestDto("Fix outlet", FUTURE_DATE);
             when(svc.updateMyRequest(eq(RESIDENT_ID), eq(REQUEST_ID), any()))
-                    .thenThrow(
-                            new NotFoundException("Request not found"));
+                    .thenThrow(new NotFoundException("Request not found"));
             mockMvc.perform(
                             patch("/residents/" + RESIDENT_ID + "/requests/" + REQUEST_ID)
                                     .header("Authorization", "Bearer " + VALID_TOKEN)
@@ -305,9 +288,7 @@ class ResidentRequestControllerTest {
         void update_request_invalid_token_returns_403() throws Exception {
             when(jwtTokenProvider.validateToken(anyString()))
                     .thenThrow(new JwtException("Invalid token"));
-            var dto =
-                    new UpdateRequestDto(
-                            "Fix outlet", FUTURE_DATE);
+            var dto = new UpdateRequestDto("Fix outlet", FUTURE_DATE);
             mockMvc.perform(
                             patch("/residents/" + RESIDENT_ID + "/requests/" + REQUEST_ID)
                                     .header("Authorization", "Bearer invalid-token")
@@ -319,9 +300,7 @@ class ResidentRequestControllerTest {
 
         @Test
         void update_request_missing_token_returns_403() throws Exception {
-            var dto =
-                    new UpdateRequestDto(
-                            "Fix outlet", FUTURE_DATE);
+            var dto = new UpdateRequestDto("Fix outlet", FUTURE_DATE);
             mockMvc.perform(
                             patch("/residents/" + RESIDENT_ID + "/requests/" + REQUEST_ID)
                                     .contentType("application/json")
@@ -333,9 +312,7 @@ class ResidentRequestControllerTest {
         @Test
         void update_request_non_resident_returns_403() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "TECHNICIAN", RESIDENT_ID, VALID_TOKEN);
-            var dto =
-                    new UpdateRequestDto(
-                            "Fix outlet", FUTURE_DATE);
+            var dto = new UpdateRequestDto("Fix outlet", FUTURE_DATE);
             mockMvc.perform(
                             patch("/residents/" + RESIDENT_ID + "/requests/" + REQUEST_ID)
                                     .header("Authorization", "Bearer " + VALID_TOKEN)
@@ -357,8 +334,7 @@ class ResidentRequestControllerTest {
         @MethodSource("roles")
         void user_can_cancel_request(String role, UUID userId) throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, role, userId, VALID_TOKEN);
-            var response =
-                    mock(CancelResponseDto.class);
+            var response = mock(CancelResponseDto.class);
             when(svc.cancelMyRequest(userId, REQUEST_ID)).thenReturn(response);
             mockMvc.perform(
                             delete("/residents/" + userId + "/requests/" + REQUEST_ID)
@@ -370,8 +346,7 @@ class ResidentRequestControllerTest {
         @Test
         void cancel_request_not_found_returns_404() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", RESIDENT_ID, VALID_TOKEN);
-            doThrow(
-                            new NotFoundException("Request not found"))
+            doThrow(new NotFoundException("Request not found"))
                     .when(svc)
                     .cancelMyRequest(RESIDENT_ID, REQUEST_ID);
             mockMvc.perform(

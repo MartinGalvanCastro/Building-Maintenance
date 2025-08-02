@@ -87,17 +87,27 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
-    public ProblemDetail handleDataIntegrityViolation(org.springframework.dao.DataIntegrityViolationException ex, HttpServletRequest req) {
-        log.error("DataIntegrityViolationException at {}: {}", req.getRequestURI(), ex.toString(), ex);
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Resource already exists or data integrity violation.");
+    public ProblemDetail handleDataIntegrityViolation(
+            org.springframework.dao.DataIntegrityViolationException ex, HttpServletRequest req) {
+        log.error(
+                "DataIntegrityViolationException at {}: {}",
+                req.getRequestURI(),
+                ex.toString(),
+                ex);
+        ProblemDetail problem =
+                ProblemDetail.forStatusAndDetail(
+                        HttpStatus.NOT_FOUND,
+                        "Resource already exists or data integrity violation.");
         problem.setTitle("Not Found");
         return problem;
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ProblemDetail handleEmailAlreadyExists(EmailAlreadyExistsException ex, HttpServletRequest req) {
+    public ProblemDetail handleEmailAlreadyExists(
+            EmailAlreadyExistsException ex, HttpServletRequest req) {
         log.error("EmailAlreadyExistsException at {}: {}", req.getRequestURI(), ex.toString(), ex);
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problem =
+                ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problem.setTitle("Email Already Exists");
         return problem;
     }

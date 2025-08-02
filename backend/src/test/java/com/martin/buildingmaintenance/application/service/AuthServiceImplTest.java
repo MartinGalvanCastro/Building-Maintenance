@@ -9,7 +9,6 @@ import com.martin.buildingmaintenance.application.dto.LogOutResponseDto;
 import com.martin.buildingmaintenance.application.exception.BadCredentialsException;
 import com.martin.buildingmaintenance.application.port.out.TokenBlacklistRepository;
 import com.martin.buildingmaintenance.application.port.out.UserRepository;
-import com.martin.buildingmaintenance.domain.model.Role;
 import com.martin.buildingmaintenance.domain.model.User;
 import com.martin.buildingmaintenance.security.JwtTokenProvider;
 import com.martin.buildingmaintenance.security.SudoAdminProperties;

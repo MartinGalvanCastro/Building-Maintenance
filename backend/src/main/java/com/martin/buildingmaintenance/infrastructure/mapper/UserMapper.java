@@ -14,13 +14,11 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface UserMapper {
 
-
     @Mapping(target = "role", ignore = true)
     Resident toDomain(ResidentEntity entity);
 
     @Mapping(target = "role", ignore = true)
     Technician toDomain(TechnicianEntity entity);
-
 
     @InheritInverseConfiguration
     ResidentEntity toEntity(Resident resident);

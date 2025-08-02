@@ -5,13 +5,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.martin.buildingmaintenance.application.dto.DeleteResponseDto;
+import com.martin.buildingmaintenance.application.dto.TechnicianCreateCommandDto;
+import com.martin.buildingmaintenance.application.dto.TechnicianDto;
+import com.martin.buildingmaintenance.application.dto.TechnicianUpdateCommandDto;
+import com.martin.buildingmaintenance.application.exception.NotFoundException;
 import com.martin.buildingmaintenance.application.port.in.AdminManagementService;
 import com.martin.buildingmaintenance.domain.model.Specialization;
 import com.martin.buildingmaintenance.infrastructure.config.SecurityConfig;
 import com.martin.buildingmaintenance.infrastructure.persistence.adapter.BlacklistedTokenAdapter;
 import com.martin.buildingmaintenance.security.JwtTokenProvider;
 import io.jsonwebtoken.JwtException;
-
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +26,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.martin.buildingmaintenance.application.dto.TechnicianCreateCommandDto;
-import com.martin.buildingmaintenance.application.dto.TechnicianUpdateCommandDto;
-import com.martin.buildingmaintenance.application.dto.TechnicianDto;
-import com.martin.buildingmaintenance.application.exception.NotFoundException;
-import com.martin.buildingmaintenance.application.dto.DeleteResponseDto;
 
 @WebMvcTest(controllers = TechnicianManagementController.class)
 @Import(SecurityConfig.class)
@@ -311,8 +309,7 @@ class TechnicianManagementControllerTest {
         @Test
         void admin_can_delete_technician() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
-            var response =
-                    mock(DeleteResponseDto.class);
+            var response = mock(DeleteResponseDto.class);
             when(adminSvc.deleteTechnician(TECHNICIAN_ID)).thenReturn(response);
             mockMvc.perform(
                             delete("/technicians/" + TECHNICIAN_ID)
@@ -324,8 +321,7 @@ class TechnicianManagementControllerTest {
         @Test
         void delete_technician_not_found_returns_404() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
-            doThrow(
-                            new NotFoundException("Technician not found"))
+            doThrow(new NotFoundException("Technician not found"))
                     .when(adminSvc)
                     .deleteTechnician(TECHNICIAN_ID);
             mockMvc.perform(

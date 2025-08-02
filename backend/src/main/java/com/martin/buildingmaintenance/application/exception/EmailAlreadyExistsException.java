@@ -5,4 +5,3 @@ public class EmailAlreadyExistsException extends BaseAppException {
         super("Email already exists: " + email);
     }
 }
-

@@ -151,13 +151,14 @@ class AdminManagementServiceImplTest {
     @Test
     void saveResident_success() {
         ResidentCreateCommandDto dto = mock(ResidentCreateCommandDto.class);
-        Resident domain = Resident.builder()
-                .fullName("f")
-                .email("e")
-                .passwordHash("p")
-                .unitNumber("u")
-                .unitBlock("b")
-                .build();
+        Resident domain =
+                Resident.builder()
+                        .fullName("f")
+                        .email("e")
+                        .passwordHash("p")
+                        .unitNumber("u")
+                        .unitBlock("b")
+                        .build();
         Resident saved = mock(Resident.class);
         ResidentialComplex complex = mock(ResidentialComplex.class);
         when(dto.fullName()).thenReturn("f");
@@ -184,13 +185,14 @@ class AdminManagementServiceImplTest {
     @Test
     void updateResident_success() {
         UUID id = UUID.randomUUID();
-        Resident existing = Resident.builder()
-                .fullName("f")
-                .email("e")
-                .passwordHash("p")
-                .unitNumber("u")
-                .unitBlock("b")
-                .build();
+        Resident existing =
+                Resident.builder()
+                        .fullName("f")
+                        .email("e")
+                        .passwordHash("p")
+                        .unitNumber("u")
+                        .unitBlock("b")
+                        .build();
         ResidentUpdateCommandDto dto = mock(ResidentUpdateCommandDto.class);
         ResidentialComplex complex = mock(ResidentialComplex.class);
         when(residentRepo.findById(id)).thenReturn(Optional.of(existing));
@@ -233,13 +235,14 @@ class AdminManagementServiceImplTest {
     @Test
     void updateResident_doesNotUpdatePasswordIfNullOrBlank() {
         UUID id = UUID.randomUUID();
-        Resident existing = Resident.builder()
-                .fullName("f")
-                .email("e")
-                .passwordHash("oldpass")
-                .unitNumber("u")
-                .unitBlock("b")
-                .build();
+        Resident existing =
+                Resident.builder()
+                        .fullName("f")
+                        .email("e")
+                        .passwordHash("oldpass")
+                        .unitNumber("u")
+                        .unitBlock("b")
+                        .build();
         ResidentUpdateCommandDto dto = mock(ResidentUpdateCommandDto.class);
         Resident saved = mock(Resident.class);
         ResidentialComplex complex = mock(ResidentialComplex.class);
@@ -258,7 +261,8 @@ class AdminManagementServiceImplTest {
         // blank password
         when(dto.password()).thenReturn("");
         service.updateResident(id, dto);
-        verify(residentRepo, times(2)).save(argThat(res -> "oldpass".equals(res.getPasswordHash())));
+        verify(residentRepo, times(2))
+                .save(argThat(res -> "oldpass".equals(res.getPasswordHash())));
     }
 
     @Test
@@ -348,12 +352,13 @@ class AdminManagementServiceImplTest {
     @Test
     void updateTechnician_doesNotUpdatePasswordIfNullOrBlank() {
         UUID id = UUID.randomUUID();
-        Technician existing = Technician.builder()
-                .fullName("f")
-                .email("e")
-                .passwordHash("oldpass")
-                .specializations(Set.of())
-                .build();
+        Technician existing =
+                Technician.builder()
+                        .fullName("f")
+                        .email("e")
+                        .passwordHash("oldpass")
+                        .specializations(Set.of())
+                        .build();
         TechnicianUpdateCommandDto dto = mock(TechnicianUpdateCommandDto.class);
         Technician saved = mock(Technician.class);
         TechnicianDto outDto = mock(TechnicianDto.class);
@@ -368,7 +373,8 @@ class AdminManagementServiceImplTest {
         // blank password
         when(dto.password()).thenReturn("");
         service.updateTechnician(id, dto);
-        verify(technicianRepo, times(2)).save(argThat(tech -> "oldpass".equals(tech.getPasswordHash())));
+        verify(technicianRepo, times(2))
+                .save(argThat(tech -> "oldpass".equals(tech.getPasswordHash())));
     }
 
     @Test
@@ -468,8 +474,12 @@ class AdminManagementServiceImplTest {
     @Test
     void createRequest_success_withResident() {
         UUID residentId = UUID.randomUUID();
-        CreateMaintenanceRequestDto dto = new CreateMaintenanceRequestDto(
-            residentId, "desc", Specialization.PLUMBING, java.time.LocalDateTime.now().plusDays(1));
+        CreateMaintenanceRequestDto dto =
+                new CreateMaintenanceRequestDto(
+                        residentId,
+                        "desc",
+                        Specialization.PLUMBING,
+                        java.time.LocalDateTime.now().plusDays(1));
         Resident resident = mock(Resident.class);
         MaintenanceRequest saved = mock(MaintenanceRequest.class);
         MaintenanceRequestDto outDto = mock(MaintenanceRequestDto.class);
@@ -482,16 +492,24 @@ class AdminManagementServiceImplTest {
     @Test
     void createRequest_residentNotFound_throws() {
         UUID residentId = UUID.randomUUID();
-        CreateMaintenanceRequestDto dto = new CreateMaintenanceRequestDto(
-            residentId, "desc", Specialization.PLUMBING, java.time.LocalDateTime.now().plusDays(1));
+        CreateMaintenanceRequestDto dto =
+                new CreateMaintenanceRequestDto(
+                        residentId,
+                        "desc",
+                        Specialization.PLUMBING,
+                        java.time.LocalDateTime.now().plusDays(1));
         when(residentRepo.findById(residentId)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> service.createRequest(dto));
     }
 
     @Test
     void createRequest_nullResidentId_throws() {
-        CreateMaintenanceRequestDto dto = new CreateMaintenanceRequestDto(
-            null, "desc", Specialization.PLUMBING, java.time.LocalDateTime.now().plusDays(1));
+        CreateMaintenanceRequestDto dto =
+                new CreateMaintenanceRequestDto(
+                        null,
+                        "desc",
+                        Specialization.PLUMBING,
+                        java.time.LocalDateTime.now().plusDays(1));
         assertThrows(IllegalArgumentException.class, () -> service.createRequest(dto));
     }
 }

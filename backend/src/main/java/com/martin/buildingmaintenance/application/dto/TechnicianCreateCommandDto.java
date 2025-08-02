@@ -4,7 +4,6 @@ import com.martin.buildingmaintenance.domain.model.Specialization;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.List;
 
 public record TechnicianCreateCommandDto(
@@ -18,5 +17,5 @@ public record TechnicianCreateCommandDto(
                 String password,
         @NotNull(message = "Specializations must not be null")
                 @NotEmpty(message = "Specializations must not be empty")
-        List<@NotNull(message = "Specialization must not be null") Specialization>
+                List<@NotNull(message = "Specialization must not be null") Specialization>
                         specializations) {}

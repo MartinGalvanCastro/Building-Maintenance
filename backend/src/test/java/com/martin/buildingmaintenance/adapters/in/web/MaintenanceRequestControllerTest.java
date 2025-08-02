@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -243,57 +242,76 @@ class MaintenanceRequestControllerTest {
         @Test
         void admin_can_create_request() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
-            CreateRequestDto dto = new CreateRequestDto("desc", Specialization.PLUMBING, LocalDateTime.now().plusDays(1));
+            CreateRequestDto dto =
+                    new CreateRequestDto(
+                            "desc", Specialization.PLUMBING, LocalDateTime.now().plusDays(1));
             MaintenanceRequestDto out = mock(MaintenanceRequestDto.class);
             when(adminSvc.createRequest(any())).thenReturn(out);
-            mockMvc.perform(post("/maintenance-requests")
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType("application/json")
-                    .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isOk());
+            mockMvc.perform(
+                            post("/maintenance-requests")
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType("application/json")
+                                    .content(new ObjectMapper().writeValueAsString(dto)))
+                    .andExpect(status().isOk());
             verify(adminSvc).createRequest(any());
         }
+
         @Test
         void non_admin_cannot_create_request() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", ADMIN_ID, VALID_TOKEN);
-            CreateRequestDto dto = new CreateRequestDto("desc", Specialization.PLUMBING, LocalDateTime.now().plusDays(1));
-            mockMvc.perform(post("/maintenance-requests")
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType("application/json")
-                    .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isForbidden());
+            CreateRequestDto dto =
+                    new CreateRequestDto(
+                            "desc", Specialization.PLUMBING, LocalDateTime.now().plusDays(1));
+            mockMvc.perform(
+                            post("/maintenance-requests")
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType("application/json")
+                                    .content(new ObjectMapper().writeValueAsString(dto)))
+                    .andExpect(status().isForbidden());
             verify(adminSvc, never()).createRequest(any());
         }
+
         @Test
         void unauthenticated_cannot_create_request() throws Exception {
-            CreateRequestDto dto = new CreateRequestDto("desc", Specialization.PLUMBING, LocalDateTime.now().plusDays(1));
-            mockMvc.perform(post("/maintenance-requests")
-                    .contentType("application/json")
-                    .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isForbidden());
+            CreateRequestDto dto =
+                    new CreateRequestDto(
+                            "desc", Specialization.PLUMBING, LocalDateTime.now().plusDays(1));
+            mockMvc.perform(
+                            post("/maintenance-requests")
+                                    .contentType("application/json")
+                                    .content(new ObjectMapper().writeValueAsString(dto)))
+                    .andExpect(status().isForbidden());
             verify(adminSvc, never()).createRequest(any());
         }
+
         @Test
         void invalid_token_cannot_create_request() throws Exception {
-            when(jwtTokenProvider.validateToken(anyString())).thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
-            CreateRequestDto dto = new CreateRequestDto("desc", Specialization.PLUMBING, LocalDateTime.now().plusDays(1));
-            mockMvc.perform(post("/maintenance-requests")
-                    .header("Authorization", "Bearer invalid-token")
-                    .contentType("application/json")
-                    .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isForbidden());
+            when(jwtTokenProvider.validateToken(anyString()))
+                    .thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
+            CreateRequestDto dto =
+                    new CreateRequestDto(
+                            "desc", Specialization.PLUMBING, LocalDateTime.now().plusDays(1));
+            mockMvc.perform(
+                            post("/maintenance-requests")
+                                    .header("Authorization", "Bearer invalid-token")
+                                    .contentType("application/json")
+                                    .content(new ObjectMapper().writeValueAsString(dto)))
+                    .andExpect(status().isForbidden());
             verify(adminSvc, never()).createRequest(any());
         }
+
         @Test
         void invalid_payload_returns_bad_request() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
             // Missing required fields (all null)
-            CreateMaintenanceRequestDto dto = new CreateMaintenanceRequestDto(null, null, null, null);
-            mockMvc.perform(post("/maintenance-requests")
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType("application/json")
-                    .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
+            CreateMaintenanceRequestDto dto =
+                    new CreateMaintenanceRequestDto(null, null, null, null);
+            mockMvc.perform(
+                            post("/maintenance-requests")
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType("application/json")
+                                    .content(new ObjectMapper().writeValueAsString(dto)))
+                    .andExpect(status().isBadRequest());
             verify(adminSvc, never()).createRequest(any());
         }
     }
@@ -307,42 +325,50 @@ class MaintenanceRequestControllerTest {
             UpdateRequestDto dto = new UpdateRequestDto("desc", LocalDateTime.now().plusDays(1));
             MaintenanceRequestDto out = mock(MaintenanceRequestDto.class);
             when(adminSvc.updateRequest(eq(REQUEST_ID), any())).thenReturn(out);
-            mockMvc.perform(put("/maintenance-requests/" + REQUEST_ID)
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType("application/json")
-                    .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isOk());
+            mockMvc.perform(
+                            put("/maintenance-requests/" + REQUEST_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType("application/json")
+                                    .content(new ObjectMapper().writeValueAsString(dto)))
+                    .andExpect(status().isOk());
             verify(adminSvc).updateRequest(eq(REQUEST_ID), any());
         }
+
         @Test
         void non_admin_cannot_update_request() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", ADMIN_ID, VALID_TOKEN);
             UpdateRequestDto dto = new UpdateRequestDto("desc", LocalDateTime.now().plusDays(1));
-            mockMvc.perform(put("/maintenance-requests/" + REQUEST_ID)
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType("application/json")
-                    .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isForbidden());
+            mockMvc.perform(
+                            put("/maintenance-requests/" + REQUEST_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType("application/json")
+                                    .content(new ObjectMapper().writeValueAsString(dto)))
+                    .andExpect(status().isForbidden());
             verify(adminSvc, never()).updateRequest(any(), any());
         }
+
         @Test
         void unauthenticated_cannot_update_request() throws Exception {
             UpdateRequestDto dto = new UpdateRequestDto("desc", LocalDateTime.now().plusDays(1));
-            mockMvc.perform(put("/maintenance-requests/" + REQUEST_ID)
-                    .contentType("application/json")
-                    .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isForbidden());
+            mockMvc.perform(
+                            put("/maintenance-requests/" + REQUEST_ID)
+                                    .contentType("application/json")
+                                    .content(new ObjectMapper().writeValueAsString(dto)))
+                    .andExpect(status().isForbidden());
             verify(adminSvc, never()).updateRequest(any(), any());
         }
+
         @Test
         void invalid_token_cannot_update_request() throws Exception {
-            when(jwtTokenProvider.validateToken(anyString())).thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
+            when(jwtTokenProvider.validateToken(anyString()))
+                    .thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
             UpdateRequestDto dto = new UpdateRequestDto("desc", LocalDateTime.now().plusDays(1));
-            mockMvc.perform(put("/maintenance-requests/" + REQUEST_ID)
-                    .header("Authorization", "Bearer invalid-token")
-                    .contentType("application/json")
-                    .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isForbidden());
+            mockMvc.perform(
+                            put("/maintenance-requests/" + REQUEST_ID)
+                                    .header("Authorization", "Bearer invalid-token")
+                                    .contentType("application/json")
+                                    .content(new ObjectMapper().writeValueAsString(dto)))
+                    .andExpect(status().isForbidden());
             verify(adminSvc, never()).updateRequest(any(), any());
         }
     }

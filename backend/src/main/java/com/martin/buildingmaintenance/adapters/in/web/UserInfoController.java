@@ -13,19 +13,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "User Info", description = "Endpoints for retrieving information about the currently authenticated user.")
+@Tag(
+        name = "User Info",
+        description =
+                "Endpoints for retrieving information about the currently authenticated user.")
 @RestController
 @RequestMapping("/me")
 @RequiredArgsConstructor
 public class UserInfoController {
     private final UserInfoService userInfoService;
 
-    @Operation(summary = "Get current user info", description = "Returns information about the currently authenticated user, including their role, relationships, and related maintenance requests.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User info returned successfully"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing token"),
-        @ApiResponse(responseCode = "404", description = "User not found")
-    })
+    @Operation(
+            summary = "Get current user info",
+            description =
+                    "Returns information about the currently authenticated user, including their role, relationships, and related maintenance requests.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", description = "User info returned successfully"),
+                @ApiResponse(
+                        responseCode = "401",
+                        description = "Unauthorized - Invalid or missing token"),
+                @ApiResponse(responseCode = "404", description = "User not found")
+            })
     @GetMapping
     public ResponseEntity<UserInfoDto> getCurrentUser(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");

@@ -357,8 +357,7 @@ class ResidentialComplexControllerTest {
         @DisplayName("Delete complex not found returns 404")
         void delete_complex_not_found_returns_404() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
-            doThrow(
-                            new NotFoundException("Complex not found"))
+            doThrow(new NotFoundException("Complex not found"))
                     .when(adminSvc)
                     .deleteComplex(COMPLEX_ID);
             mockMvc.perform(

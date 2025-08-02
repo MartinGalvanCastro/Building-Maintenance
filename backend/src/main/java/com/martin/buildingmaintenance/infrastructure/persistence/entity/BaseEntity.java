@@ -4,7 +4,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.util.UUID;
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -16,6 +15,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public abstract class BaseEntity {
 
-    @GeneratedValue
-    @Id private UUID id;
+    @GeneratedValue @Id private UUID id;
 }

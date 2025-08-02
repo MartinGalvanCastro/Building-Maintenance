@@ -5,4 +5,3 @@ import com.martin.buildingmaintenance.application.dto.UserInfoDto;
 public interface UserInfoService {
     UserInfoDto getCurrentUserInfo(String authHeader);
 }
-

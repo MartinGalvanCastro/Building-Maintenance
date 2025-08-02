@@ -46,7 +46,6 @@ class UserMapperTest {
         assertThrows(IllegalArgumentException.class, () -> mapper.toDomain(unknown));
     }
 
-
     @Test
     void toEntity_resident() {
         Resident resident = mock(Resident.class);

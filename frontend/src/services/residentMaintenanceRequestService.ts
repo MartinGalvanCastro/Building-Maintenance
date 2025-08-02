@@ -22,7 +22,7 @@ export function createResidentRequest(residentId: string, data: CreateRequestDto
 }
 
 export function updateResidentRequest(residentId: string, requestId: string, data: UpdateRequestDto): Promise<MaintenanceRequestDto> {
-  return residentReqApi.update3(residentId, requestId, data).then(res => res.data);
+  return residentReqApi.update4(residentId, requestId, data).then(res => res.data);
 }
 
 export function cancelResidentRequest(residentId: string, requestId: string): Promise<CancelResponseDto> {

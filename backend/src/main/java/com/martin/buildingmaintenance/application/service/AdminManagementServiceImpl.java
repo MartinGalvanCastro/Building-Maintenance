@@ -10,13 +10,12 @@ import com.martin.buildingmaintenance.infrastructure.mapper.MaintenanceRequestMa
 import com.martin.buildingmaintenance.infrastructure.mapper.ResidentMapper;
 import com.martin.buildingmaintenance.infrastructure.mapper.ResidentialComplexMapper;
 import com.martin.buildingmaintenance.infrastructure.mapper.TechnicianMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -159,19 +158,21 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         if (userWithEmail.isPresent() && !userWithEmail.get().getId().equals(residentId)) {
             throw new EmailAlreadyExistsException(dto.email());
         }
-        var builder = existing.toBuilder()
-                .fullName(dto.fullName())
-                .email(dto.email())
-                .unitNumber(dto.unitNumber())
-                .unitBlock(dto.unitBlock())
-                .residentialComplex(
-                        complexRepo
-                                .findById(dto.residentialComplexId())
-                                .orElseThrow(
-                                        () ->
-                                                new NotFoundException(
-                                                        "Complex not found: "
-                                                                + dto.residentialComplexId())));
+        var builder =
+                existing.toBuilder()
+                        .fullName(dto.fullName())
+                        .email(dto.email())
+                        .unitNumber(dto.unitNumber())
+                        .unitBlock(dto.unitBlock())
+                        .residentialComplex(
+                                complexRepo
+                                        .findById(dto.residentialComplexId())
+                                        .orElseThrow(
+                                                () ->
+                                                        new NotFoundException(
+                                                                "Complex not found: "
+                                                                        + dto
+                                                                                .residentialComplexId())));
         if (dto.password() != null && !dto.password().isBlank()) {
             builder.passwordHash(dto.password());
         }
@@ -242,11 +243,12 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         if (userWithEmail.isPresent() && !userWithEmail.get().getId().equals(technicianId)) {
             throw new EmailAlreadyExistsException(dto.email());
         }
-        var builder = existing.toBuilder()
-                .id(existing.getId())
-                .fullName(dto.fullName())
-                .email(dto.email())
-                .specializations(new HashSet<>(dto.specializations()));
+        var builder =
+                existing.toBuilder()
+                        .id(existing.getId())
+                        .fullName(dto.fullName())
+                        .email(dto.email())
+                        .specializations(new HashSet<>(dto.specializations()));
         if (dto.password() != null && !dto.password().isBlank()) {
             builder.passwordHash(dto.password());
         }
@@ -309,27 +311,38 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         if (dto.residentId() == null) {
             throw new IllegalArgumentException("Resident ID must not be null");
         }
-        var resident = residentRepo.findById(dto.residentId())
-            .orElseThrow(() -> new NotFoundException("Resident not found: " + dto.residentId()));
-        var req = MaintenanceRequest.builder()
-                .resident(resident)
-                .description(dto.description())
-                .specialization(dto.specialization())
-                .status(RequestStatus.PENDING)
-                .createdAt(java.time.LocalDateTime.now())
-                .scheduledAt(dto.scheduledAt())
-                .build();
+        var resident =
+                residentRepo
+                        .findById(dto.residentId())
+                        .orElseThrow(
+                                () ->
+                                        new NotFoundException(
+                                                "Resident not found: " + dto.residentId()));
+        var req =
+                MaintenanceRequest.builder()
+                        .resident(resident)
+                        .description(dto.description())
+                        .specialization(dto.specialization())
+                        .status(RequestStatus.PENDING)
+                        .createdAt(java.time.LocalDateTime.now())
+                        .scheduledAt(dto.scheduledAt())
+                        .build();
         var saved = requestRepo.save(req);
         return requestMapper.toDto(saved);
     }
 
     @Override
     public MaintenanceRequestDto updateRequest(UUID requestId, UpdateRequestDto dto) {
-        var existing = requestRepo.findById(requestId).orElseThrow(() -> new NotFoundException("Request not found: " + requestId));
-        var updated = existing.toBuilder()
-                .description(dto.description())
-                .scheduledAt(dto.scheduledAt())
-                .build();
+        var existing =
+                requestRepo
+                        .findById(requestId)
+                        .orElseThrow(
+                                () -> new NotFoundException("Request not found: " + requestId));
+        var updated =
+                existing.toBuilder()
+                        .description(dto.description())
+                        .scheduledAt(dto.scheduledAt())
+                        .build();
         var saved = requestRepo.save(updated);
         return requestMapper.toDto(saved);
     }

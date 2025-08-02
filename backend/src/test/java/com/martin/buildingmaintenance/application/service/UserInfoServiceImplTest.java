@@ -1,36 +1,35 @@
 package com.martin.buildingmaintenance.application.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.martin.buildingmaintenance.application.dto.ResidentialComplexDto;
 import com.martin.buildingmaintenance.application.dto.UserInfoDto;
 import com.martin.buildingmaintenance.application.exception.AccessDeniedException;
 import com.martin.buildingmaintenance.application.exception.NotFoundException;
+import com.martin.buildingmaintenance.application.port.out.MaintenanceRequestRepository;
 import com.martin.buildingmaintenance.application.port.out.ResidentRepository;
 import com.martin.buildingmaintenance.application.port.out.TechnicianRepository;
 import com.martin.buildingmaintenance.application.port.out.UserRepository;
-import com.martin.buildingmaintenance.application.port.out.MaintenanceRequestRepository;
-import com.martin.buildingmaintenance.domain.model.Role;
 import com.martin.buildingmaintenance.domain.model.Resident;
+import com.martin.buildingmaintenance.domain.model.ResidentialComplex;
+import com.martin.buildingmaintenance.domain.model.Role;
 import com.martin.buildingmaintenance.domain.model.Technician;
 import com.martin.buildingmaintenance.domain.model.User;
-import com.martin.buildingmaintenance.domain.model.ResidentialComplex;
 import com.martin.buildingmaintenance.infrastructure.mapper.MaintenanceRequestMapper;
 import com.martin.buildingmaintenance.infrastructure.mapper.ResidentialComplexMapper;
 import com.martin.buildingmaintenance.security.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserInfoServiceImplTest {
@@ -70,7 +69,8 @@ class UserInfoServiceImplTest {
         when(resident.getRole()).thenReturn(Role.RESIDENT);
         when(resident.getResidentialComplex()).thenReturn(residentialComplex);
         when(residentialComplexMapper.toDto(residentialComplex)).thenReturn(residentialComplexDto);
-        when(maintenanceRequestRepository.findByResidentId(USER_ID)).thenReturn(Collections.emptyList());
+        when(maintenanceRequestRepository.findByResidentId(USER_ID))
+                .thenReturn(Collections.emptyList());
         UserInfoDto dto = service.getCurrentUserInfo(AUTH_HEADER);
         assertEquals(USER_ID.toString(), dto.id());
         assertEquals(Role.RESIDENT, dto.role());
@@ -105,7 +105,8 @@ class UserInfoServiceImplTest {
         when(tech.getFullName()).thenReturn("Tech Name");
         when(tech.getEmail()).thenReturn("tech@email.com");
         when(tech.getRole()).thenReturn(Role.TECHNICIAN);
-        when(maintenanceRequestRepository.findByAssignedTechnicianId(USER_ID)).thenReturn(Collections.emptyList());
+        when(maintenanceRequestRepository.findByAssignedTechnicianId(USER_ID))
+                .thenReturn(Collections.emptyList());
         UserInfoDto dto = service.getCurrentUserInfo(AUTH_HEADER);
         assertEquals(USER_ID.toString(), dto.id());
         assertEquals(Role.TECHNICIAN, dto.role());

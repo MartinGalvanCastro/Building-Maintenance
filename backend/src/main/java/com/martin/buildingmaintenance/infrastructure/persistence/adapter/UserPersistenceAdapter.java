@@ -6,7 +6,6 @@ import com.martin.buildingmaintenance.infrastructure.mapper.UserMapper;
 import com.martin.buildingmaintenance.infrastructure.persistence.repository.JPAUserRepository;
 import java.util.Optional;
 import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
