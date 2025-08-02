@@ -7,7 +7,10 @@ import java.util.UUID;
 
 public interface ResidentialComplexRepository {
     List<ResidentialComplex> findAll();
+
     Optional<ResidentialComplex> findById(UUID id);
+
     ResidentialComplex save(ResidentialComplex complex);
+
     void deleteById(UUID id);
 }

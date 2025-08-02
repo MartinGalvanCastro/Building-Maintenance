@@ -9,11 +9,10 @@ import com.martin.buildingmaintenance.application.port.out.TokenBlacklistReposit
 import com.martin.buildingmaintenance.application.port.out.UserRepository;
 import com.martin.buildingmaintenance.security.JwtTokenProvider;
 import com.martin.buildingmaintenance.security.SudoAdminProperties;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,27 +24,27 @@ public class AuthServiceImpl implements AuthService {
     private final TokenBlacklistRepository tokenBlacklistRepository;
     private final SudoAdminProperties sudoProps;
 
-
     @Override
     public LogInResultDto authenticate(CredentialsDto credentialsDto) {
 
-        if (credentialsDto.email().equals(sudoProps.getUsername()) &&
-                credentialsDto.password().equals(sudoProps.getPassword())) {
-         
-            String token = jwtTokenProvider.generateToken(
-                    UUID.nameUUIDFromBytes(sudoProps.getUsername().getBytes()),
-                    "ADMIN"
-            );
+        if (credentialsDto.email().equals(sudoProps.getUsername())
+                && credentialsDto.password().equals(sudoProps.getPassword())) {
+
+            String token =
+                    jwtTokenProvider.generateToken(
+                            UUID.nameUUIDFromBytes(sudoProps.getUsername().getBytes()), "ADMIN");
             return new LogInResultDto(token);
         }
 
-        var user = userRepo.findByEmail(credentialsDto.email())
-                .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
-        if (!passwordEncoder.matches(credentialsDto.password(), user.getPasswordHash())){
+        var user =
+                userRepo.findByEmail(credentialsDto.email())
+                        .orElseThrow(
+                                () -> new BadCredentialsException("Invalid email or password"));
+        if (!passwordEncoder.matches(credentialsDto.password(), user.getPasswordHash())) {
             throw new BadCredentialsException("Invalid email or password");
         }
 
-        String token = jwtTokenProvider.generateToken(user.getId(), user.getRole().name());
+        String token = jwtTokenProvider.generateToken(user);
         return new LogInResultDto(token);
     }
 
@@ -53,5 +52,10 @@ public class AuthServiceImpl implements AuthService {
     public LogOutResponseDto logout(String token) {
         tokenBlacklistRepository.revoke(token);
         return new LogOutResponseDto("Successfully logged out");
+    }
+
+    @Override
+    public void validateToken(String token) {
+        jwtTokenProvider.validateToken(token);
     }
 }

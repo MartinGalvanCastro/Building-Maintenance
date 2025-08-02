@@ -1,19 +1,16 @@
 package com.martin.buildingmaintenance.infrastructure.mapper;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-import com.martin.buildingmaintenance.domain.model.Admin;
 import com.martin.buildingmaintenance.domain.model.Resident;
 import com.martin.buildingmaintenance.domain.model.Technician;
 import com.martin.buildingmaintenance.domain.model.User;
-import com.martin.buildingmaintenance.infrastructure.persistence.entity.AdminEntity;
 import com.martin.buildingmaintenance.infrastructure.persistence.entity.ResidentEntity;
 import com.martin.buildingmaintenance.infrastructure.persistence.entity.TechnicianEntity;
 import com.martin.buildingmaintenance.infrastructure.persistence.entity.UserEntity;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class UserMapperTest {
     private UserMapper mapper;
@@ -21,16 +18,6 @@ class UserMapperTest {
     @BeforeEach
     void setUp() {
         mapper = mock(UserMapper.class, CALLS_REAL_METHODS);
-    }
-
-    @Test
-    void toDomain_adminEntity() {
-        AdminEntity entity = mock(AdminEntity.class);
-        Admin admin = mock(Admin.class);
-        when(mapper.toDomain(entity)).thenReturn(admin);
-        User result = mapper.toDomain((UserEntity) entity);
-        assertSame(admin, result);
-        verify(mapper).toDomain(entity);
     }
 
     @Test
@@ -59,15 +46,6 @@ class UserMapperTest {
         assertThrows(IllegalArgumentException.class, () -> mapper.toDomain(unknown));
     }
 
-    @Test
-    void toEntity_admin() {
-        Admin admin = mock(Admin.class);
-        AdminEntity entity = mock(AdminEntity.class);
-        when(mapper.toEntity(admin)).thenReturn(entity);
-        UserEntity result = mapper.toEntity((User) admin);
-        assertSame(entity, result);
-        verify(mapper).toEntity(admin);
-    }
 
     @Test
     void toEntity_resident() {

@@ -8,6 +8,4 @@ public record ResidentSummaryDto(
         String email,
         String unitNumber,
         String unitBlock,
-        ResidentialComplexDto residentialComplex
-) {
-}
+        ResidentialComplexDto residentialComplex) {}

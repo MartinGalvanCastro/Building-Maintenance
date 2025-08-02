@@ -4,17 +4,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
-
-import java.util.UUID;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "residential_complex")
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResidentialComplexEntity extends  BaseEntity {
+@SuperBuilder(toBuilder = true)
+public class ResidentialComplexEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
@@ -25,7 +24,6 @@ public class ResidentialComplexEntity extends  BaseEntity {
     @Column(nullable = false)
     private String city;
 
-    @Column(name="postal_code", nullable = false)
+    @Column(name = "postal_code", nullable = false)
     private String postalCode;
-
 }

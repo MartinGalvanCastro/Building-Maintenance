@@ -1,31 +1,27 @@
 package com.martin.buildingmaintenance.infrastructure.persistence.adapter;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.martin.buildingmaintenance.domain.model.Specialization;
 import com.martin.buildingmaintenance.domain.model.Technician;
 import com.martin.buildingmaintenance.infrastructure.mapper.TechnicianMapper;
 import com.martin.buildingmaintenance.infrastructure.persistence.entity.TechnicianEntity;
 import com.martin.buildingmaintenance.infrastructure.persistence.repository.JPATechnicianRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class TechnicianPersistenceAdapterTest {
-    @Mock
-    private JPATechnicianRepository jpa;
-    @Mock
-    private TechnicianMapper mapper;
-    @InjectMocks
-    private TechnicianPersistenceAdapter adapter;
+    @Mock private JPATechnicianRepository jpa;
+    @Mock private TechnicianMapper mapper;
+    @InjectMocks private TechnicianPersistenceAdapter adapter;
 
     @Test
     void findAll_returnsMappedList() {

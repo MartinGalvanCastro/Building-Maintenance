@@ -1,30 +1,26 @@
 package com.martin.buildingmaintenance.infrastructure.persistence.adapter;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.martin.buildingmaintenance.domain.model.ResidentialComplex;
 import com.martin.buildingmaintenance.infrastructure.mapper.ResidentialComplexMapper;
 import com.martin.buildingmaintenance.infrastructure.persistence.entity.ResidentialComplexEntity;
 import com.martin.buildingmaintenance.infrastructure.persistence.repository.JPAResidentialComplexRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class ResidentialComplexPersistenceAdapterTest {
-    @Mock
-    private JPAResidentialComplexRepository jpa;
-    @Mock
-    private ResidentialComplexMapper mapper;
-    @InjectMocks
-    private ResidentialComplexPersistenceAdapter adapter;
+    @Mock private JPAResidentialComplexRepository jpa;
+    @Mock private ResidentialComplexMapper mapper;
+    @InjectMocks private ResidentialComplexPersistenceAdapter adapter;
 
     @Test
     void findAll_returnsMappedList() {

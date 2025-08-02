@@ -1,12 +1,11 @@
 package com.martin.buildingmaintenance.infrastructure.persistence.entity;
 
-
 import com.martin.buildingmaintenance.domain.model.RequestStatus;
 import com.martin.buildingmaintenance.domain.model.Specialization;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "maintenance_request")
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder(toBuilder = true)
 public class MaintenanceRequestEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -44,5 +43,4 @@ public class MaintenanceRequestEntity extends BaseEntity {
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
-
 }

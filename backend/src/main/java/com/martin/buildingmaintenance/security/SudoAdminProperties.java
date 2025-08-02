@@ -11,5 +11,4 @@ public class SudoAdminProperties {
 
     private String username;
     private String password;
-
 }

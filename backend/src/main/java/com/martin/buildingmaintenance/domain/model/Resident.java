@@ -8,13 +8,11 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
-public class Resident extends  User {
+public class Resident extends User {
 
     private String unitNumber;
     private String unitBlock;
     private ResidentialComplex residentialComplex;
 
-    @Builder.Default
-    private final Role role = Role.RESIDENT;
-
+    @Builder.Default private final Role role = Role.RESIDENT;
 }

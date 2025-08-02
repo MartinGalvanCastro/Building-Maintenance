@@ -1,28 +1,24 @@
 package com.martin.buildingmaintenance.infrastructure.persistence.adapter;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.martin.buildingmaintenance.domain.model.User;
 import com.martin.buildingmaintenance.infrastructure.mapper.UserMapper;
 import com.martin.buildingmaintenance.infrastructure.persistence.entity.UserEntity;
 import com.martin.buildingmaintenance.infrastructure.persistence.repository.JPAUserRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class UserPersistenceAdapterTest {
-    @Mock
-    private JPAUserRepository jpa;
-    @Mock
-    private UserMapper mapper;
-    @InjectMocks
-    private UserPersistenceAdapter adapter;
+    @Mock private JPAUserRepository jpa;
+    @Mock private UserMapper mapper;
+    @InjectMocks private UserPersistenceAdapter adapter;
 
     @Test
     void findByEmail_returnsMappedOptional() {

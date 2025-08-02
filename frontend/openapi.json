@@ -1,0 +1,2111 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Building Maintenance API",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Resident Maintenance Requests",
+      "description": "Endpoints for residents to manage their own maintenance requests."
+    },
+    {
+      "name": "Authentication",
+      "description": "Endpoints for user authentication, login, and logout."
+    },
+    {
+      "name": "Residential Complex Management",
+      "description": "Endpoints for managing residential complexes. Only accessible by ADMIN users."
+    },
+    {
+      "name": "Actuator",
+      "description": "Monitor and interact",
+      "externalDocs": {
+        "description": "Spring Boot Actuator Web API Documentation",
+        "url": "https://docs.spring.io/spring-boot/docs/current/actuator-api/html/"
+      }
+    },
+    {
+      "name": "Resident Management",
+      "description": "Endpoints for managing residents. Only accessible by ADMIN users."
+    },
+    {
+      "name": "Technician Management",
+      "description": "Endpoints for managing technicians. Only accessible by ADMIN users."
+    },
+    {
+      "name": "User Info",
+      "description": "Endpoints for retrieving information about the currently authenticated user."
+    },
+    {
+      "name": "Maintenance Request Management",
+      "description": "Endpoints for managing maintenance requests. Only accessible by ADMIN users."
+    },
+    {
+      "name": "Technician Maintenance Requests",
+      "description": "Endpoints for technicians to manage their assigned maintenance requests."
+    }
+  ],
+  "paths": {
+    "/technicians/{id}": {
+      "get": {
+        "tags": [
+          "Technician Management"
+        ],
+        "summary": "Get a technician by ID",
+        "description": "Returns a technician by their unique identifier.",
+        "operationId": "getOne",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the technician",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Technician found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicianDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Technician not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicianDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Technician Management"
+        ],
+        "summary": "Update a technician",
+        "description": "Updates an existing technician by their ID.",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the technician",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Technician update data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicianUpdateCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Technician updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicianDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicianDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Technician not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicianDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Technician Management"
+        ],
+        "summary": "Delete a technician",
+        "description": "Deletes a technician by their ID.",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the technician",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Technician deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Technician not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/residents/{id}": {
+      "get": {
+        "tags": [
+          "Resident Management"
+        ],
+        "summary": "Get a resident by ID",
+        "description": "Returns a resident by their unique identifier.",
+        "operationId": "getOne_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the resident",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resident found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resident not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Resident Management"
+        ],
+        "summary": "Update a resident",
+        "description": "Updates an existing resident by their ID.",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the resident",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Resident update data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResidentUpdateCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Resident updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resident not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Resident Management"
+        ],
+        "summary": "Delete a resident",
+        "description": "Deletes a resident by their ID.",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the resident",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resident deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resident not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/residential-complexes/{id}": {
+      "get": {
+        "tags": [
+          "Residential Complex Management"
+        ],
+        "summary": "Get a residential complex by ID",
+        "description": "Returns a residential complex by its unique identifier.",
+        "operationId": "getOne_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the residential complex",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Residential complex found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentialComplexDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Residential complex not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentialComplexDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Residential Complex Management"
+        ],
+        "summary": "Update a residential complex",
+        "description": "Updates an existing residential complex by its ID.",
+        "operationId": "update_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the residential complex",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Residential complex update data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResidentialComplexCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Residential complex updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentialComplexDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentialComplexDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Residential complex not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentialComplexDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Residential Complex Management"
+        ],
+        "summary": "Delete a residential complex",
+        "description": "Deletes a residential complex by its ID.",
+        "operationId": "delete_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the residential complex",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Residential complex deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Residential complex not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maintenance-requests/{id}": {
+      "get": {
+        "tags": [
+          "Maintenance Request Management"
+        ],
+        "summary": "Get a maintenance request by ID",
+        "description": "Returns a maintenance request by its unique identifier.",
+        "operationId": "getOne_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the maintenance request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Maintenance request found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Maintenance request not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Maintenance Request Management"
+        ],
+        "summary": "Update a maintenance request",
+        "description": "Updates an existing maintenance request.",
+        "operationId": "update_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the maintenance request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Maintenance request updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Maintenance request not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Maintenance Request Management"
+        ],
+        "summary": "Delete a maintenance request",
+        "description": "Deletes a maintenance request by its ID.",
+        "operationId": "delete_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the maintenance request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Maintenance request deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Maintenance request not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/technicians": {
+      "get": {
+        "tags": [
+          "Technician Management"
+        ],
+        "summary": "List all technicians",
+        "description": "Returns a list of all technicians.",
+        "operationId": "listAll",
+        "responses": {
+          "200": {
+            "description": "List of technicians",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TechnicianDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Technician Management"
+        ],
+        "summary": "Create a new technician",
+        "description": "Creates a new technician with the provided details.",
+        "operationId": "create",
+        "requestBody": {
+          "description": "Technician creation data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicianCreateCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Technician created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicianDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicianDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/residents": {
+      "get": {
+        "tags": [
+          "Resident Management"
+        ],
+        "summary": "List all residents",
+        "description": "Returns a list of all residents.",
+        "operationId": "listAll_1",
+        "responses": {
+          "200": {
+            "description": "List of residents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResidentDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Resident Management"
+        ],
+        "summary": "Create a new resident",
+        "description": "Creates a new resident with the provided details.",
+        "operationId": "create_1",
+        "requestBody": {
+          "description": "Resident creation data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResidentCreateCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Resident created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/residents/{residentId}/requests": {
+      "get": {
+        "tags": [
+          "Resident Maintenance Requests"
+        ],
+        "summary": "List all maintenance requests for a resident",
+        "description": "Returns a list of all maintenance requests for the specified resident.",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "residentId",
+            "in": "path",
+            "description": "UUID of the resident",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of maintenance requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MaintenanceRequestDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Resident Maintenance Requests"
+        ],
+        "summary": "Create a new maintenance request for a resident",
+        "description": "Creates a new maintenance request for the specified resident.",
+        "operationId": "create_2",
+        "parameters": [
+          {
+            "name": "residentId",
+            "in": "path",
+            "description": "UUID of the resident",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Maintenance request creation data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Maintenance request created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/residential-complexes": {
+      "get": {
+        "tags": [
+          "Residential Complex Management"
+        ],
+        "summary": "List all residential complexes",
+        "description": "Returns a list of all residential complexes.",
+        "operationId": "listAll_2",
+        "responses": {
+          "200": {
+            "description": "List of residential complexes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResidentialComplexDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Residential Complex Management"
+        ],
+        "summary": "Create a new residential complex",
+        "description": "Creates a new residential complex with the provided details.",
+        "operationId": "create_3",
+        "requestBody": {
+          "description": "Residential complex creation data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResidentialComplexCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Residential complex created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentialComplexDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResidentialComplexDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maintenance-requests": {
+      "get": {
+        "tags": [
+          "Maintenance Request Management"
+        ],
+        "summary": "List all maintenance requests",
+        "description": "Returns a list of all maintenance requests.",
+        "operationId": "listAll_3",
+        "responses": {
+          "200": {
+            "description": "List of maintenance requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MaintenanceRequestDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Maintenance Request Management"
+        ],
+        "summary": "Create a new maintenance request",
+        "description": "Creates a new maintenance request.",
+        "operationId": "create_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMaintenanceRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Maintenance request created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Logout user",
+        "description": "Logs out the user by invalidating the JWT token.",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "Logout successful"
+          },
+          "400": {
+            "description": "Missing or malformed Authorization header",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Invalid or expired token",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "403": {
+            "description": "User not authorized to perform this action",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Authenticate user and return JWT token",
+        "description": "Authenticates a user with email and password. Returns a JWT token if successful.",
+        "operationId": "login",
+        "requestBody": {
+          "description": "User credentials",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialsDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful authentication, returns JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogInResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body or validation error",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/technicians/{technicianId}/requests/{requestId}/status": {
+      "patch": {
+        "tags": [
+          "Technician Maintenance Requests"
+        ],
+        "summary": "Change the status of a maintenance request",
+        "description": "Allows a technician to change the status of an assigned maintenance request.",
+        "operationId": "changeStatus",
+        "parameters": [
+          {
+            "name": "technicianId",
+            "in": "path",
+            "description": "UUID of the technician",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "UUID of the maintenance request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeStatusDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Status changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Maintenance request not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/residents/{residentId}/requests/{requestId}": {
+      "get": {
+        "tags": [
+          "Resident Maintenance Requests"
+        ],
+        "summary": "Get a maintenance request by ID for a resident",
+        "description": "Returns a maintenance request by its unique identifier for the specified resident.",
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "residentId",
+            "in": "path",
+            "description": "UUID of the resident",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "UUID of the maintenance request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Maintenance request found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Maintenance request not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Resident Maintenance Requests"
+        ],
+        "summary": "Cancel a maintenance request for a resident",
+        "description": "Cancels a maintenance request for the specified resident.",
+        "operationId": "cancel",
+        "parameters": [
+          {
+            "name": "residentId",
+            "in": "path",
+            "description": "UUID of the resident",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "UUID of the maintenance request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Maintenance request cancelled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Maintenance request not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Resident Maintenance Requests"
+        ],
+        "summary": "Update a maintenance request for a resident",
+        "description": "Updates an existing maintenance request for the specified resident.",
+        "operationId": "update_4",
+        "parameters": [
+          {
+            "name": "residentId",
+            "in": "path",
+            "description": "UUID of the resident",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "UUID of the maintenance request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Maintenance request update data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Maintenance request updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Maintenance request not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maintenance-requests/{id}/technician/{technicianId}": {
+      "patch": {
+        "tags": [
+          "Maintenance Request Management"
+        ],
+        "summary": "Assign a technician to a maintenance request",
+        "description": "Assigns a technician to a maintenance request by their IDs.",
+        "operationId": "assign",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of the maintenance request",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "technicianId",
+            "in": "path",
+            "description": "UUID of the technician",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Technician assigned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Maintenance request or technician not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceRequestDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/technicians/{technicianId}/requests": {
+      "get": {
+        "tags": [
+          "Technician Maintenance Requests"
+        ],
+        "summary": "List all maintenance requests assigned to a technician",
+        "description": "Returns a list of all maintenance requests assigned to the specified technician.",
+        "operationId": "list_1",
+        "parameters": [
+          {
+            "name": "technicianId",
+            "in": "path",
+            "description": "UUID of the technician",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of maintenance requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MaintenanceRequestDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "tags": [
+          "User Info"
+        ],
+        "summary": "Get current user info",
+        "description": "Returns information about the currently authenticated user, including their role, relationships, and related maintenance requests.",
+        "operationId": "getCurrentUser",
+        "responses": {
+          "200": {
+            "description": "User info returned successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/validate": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Check if a JWT token is valid",
+        "description": "Returns 200 if the provided JWT token is valid, 401 if not.",
+        "operationId": "validateToken",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token is valid"
+          },
+          "401": {
+            "description": "Token is invalid or expired"
+          }
+        }
+      }
+    },
+    "/actuator/health": {
+      "get": {
+        "tags": [
+          "Actuator"
+        ],
+        "summary": "Actuator web endpoint 'health'",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/vnd.spring-boot.actuator.v3+json": {
+                "schema": {
+                  "type": "object"
+                }
+              },
+              "application/vnd.spring-boot.actuator.v2+json": {
+                "schema": {
+                  "type": "object"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TechnicianUpdateCommandDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string"
+          },
+          "specializations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ELECTRICAL",
+                "PLUMBING",
+                "HVAC",
+                "CARPENTRY",
+                "OTHER"
+              ]
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "email",
+          "fullName",
+          "specializations"
+        ]
+      },
+      "TechnicianDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "specializations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ELECTRICAL",
+                "PLUMBING",
+                "HVAC",
+                "CARPENTRY",
+                "OTHER"
+              ]
+            }
+          }
+        }
+      },
+      "ResidentUpdateCommandDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string"
+          },
+          "unitNumber": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unitBlock": {
+            "type": "string",
+            "minLength": 1
+          },
+          "residentialComplexId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "email",
+          "fullName",
+          "unitBlock",
+          "unitNumber"
+        ]
+      },
+      "ResidentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "unitNumber": {
+            "type": "string"
+          },
+          "unitBlock": {
+            "type": "string"
+          },
+          "residentialComplex": {
+            "$ref": "#/components/schemas/ResidentialComplexDto"
+          }
+        }
+      },
+      "ResidentialComplexDto": {
+        "type": "object",
+        "description": "Summary information about a residential complex.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the residential complex."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the residential complex."
+          },
+          "address": {
+            "type": "string",
+            "description": "Address of the residential complex."
+          },
+          "city": {
+            "type": "string",
+            "description": "City where the residential complex is located."
+          },
+          "postalCode": {
+            "type": "string",
+            "description": "Postal code of the residential complex."
+          }
+        }
+      },
+      "ResidentialComplexCommandDto": {
+        "type": "object",
+        "description": "DTO used to create or update a residential complex.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the residential complex.",
+            "example": "Sunset Villas",
+            "minLength": 1
+          },
+          "address": {
+            "type": "string",
+            "description": "Address of the residential complex.",
+            "example": 123,
+            "minLength": 1
+          },
+          "city": {
+            "type": "string",
+            "description": "City where the residential complex is located.",
+            "example": "Springfield",
+            "minLength": 1
+          },
+          "postalCode": {
+            "type": "string",
+            "description": "Postal code of the residential complex.",
+            "example": 12345,
+            "minLength": 1
+          }
+        },
+        "required": [
+          "address",
+          "city",
+          "name",
+          "postalCode"
+        ]
+      },
+      "UpdateRequestDto": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "description",
+          "scheduledAt"
+        ]
+      },
+      "MaintenanceRequestDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resident": {
+            "$ref": "#/components/schemas/ResidentSummaryDto"
+          },
+          "description": {
+            "type": "string"
+          },
+          "specialization": {
+            "type": "string",
+            "enum": [
+              "ELECTRICAL",
+              "PLUMBING",
+              "HVAC",
+              "CARPENTRY",
+              "OTHER"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "SCHEDULED",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "technician": {
+            "$ref": "#/components/schemas/TechnicianSummaryDto"
+          }
+        }
+      },
+      "ResidentSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "unitNumber": {
+            "type": "string"
+          },
+          "unitBlock": {
+            "type": "string"
+          },
+          "residentialComplex": {
+            "$ref": "#/components/schemas/ResidentialComplexDto"
+          }
+        }
+      },
+      "TechnicianSummaryDto": {
+        "type": "object",
+        "description": "Summary information about a technician.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the technician."
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Full name of the technician."
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address of the technician."
+          }
+        }
+      },
+      "TechnicianCreateCommandDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1
+          },
+          "specializations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ELECTRICAL",
+                "PLUMBING",
+                "HVAC",
+                "CARPENTRY",
+                "OTHER"
+              ]
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "email",
+          "fullName",
+          "password",
+          "specializations"
+        ]
+      },
+      "ResidentCreateCommandDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unitNumber": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unitBlock": {
+            "type": "string",
+            "minLength": 1
+          },
+          "residentialComplexId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "email",
+          "fullName",
+          "password",
+          "residentialComplexId",
+          "unitBlock",
+          "unitNumber"
+        ]
+      },
+      "CreateRequestDto": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "specialization": {
+            "type": "string",
+            "enum": [
+              "ELECTRICAL",
+              "PLUMBING",
+              "HVAC",
+              "CARPENTRY",
+              "OTHER"
+            ]
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "description",
+          "scheduledAt",
+          "specialization"
+        ]
+      },
+      "CreateMaintenanceRequestDto": {
+        "type": "object",
+        "description": "Payload for creating a new maintenance request. Resident ID is required.",
+        "properties": {
+          "residentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the resident making the request",
+            "example": "b1a7e8c2-1234-4f8a-9b2e-123456789abc"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the maintenance issue",
+            "example": "Leaking kitchen faucet",
+            "minLength": 1
+          },
+          "specialization": {
+            "type": "string",
+            "description": "Required technician specialization",
+            "enum": [
+              "ELECTRICAL",
+              "PLUMBING",
+              "HVAC",
+              "CARPENTRY",
+              "OTHER"
+            ],
+            "example": "PLUMBING"
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Scheduled date and time for the maintenance",
+            "example": "2025-08-01T10:00:00"
+          }
+        },
+        "required": [
+          "description",
+          "residentId",
+          "scheduledAt",
+          "specialization"
+        ]
+      },
+      "CredentialsDto": {
+        "type": "object",
+        "description": "DTO containing user credentials for authentication.",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email address.",
+            "example": "user@example.com",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password.",
+            "example": "yourPassword",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LogInResultDto": {
+        "type": "object",
+        "description": "DTO returned after successful authentication, containing the JWT token.",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "JWT token for authenticated user.",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      },
+      "ChangeStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "SCHEDULED",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "MaintenanceRequestSummaryDto": {
+        "type": "object",
+        "description": "Summary information about a maintenance request, including related technician and resident.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the maintenance request."
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the maintenance request."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the request was created."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the maintenance request."
+          },
+          "specialization": {
+            "type": "string",
+            "description": "Specialization required for the request."
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Scheduled date and time for the request."
+          },
+          "technician": {
+            "$ref": "#/components/schemas/TechnicianSummaryDto",
+            "description": "Summary of the assigned technician."
+          },
+          "resident": {
+            "$ref": "#/components/schemas/ResidentSummaryDto",
+            "description": "Summary of the resident who made the request."
+          }
+        }
+      },
+      "UserInfoDto": {
+        "type": "object",
+        "description": "DTO containing user info, relationships, and related maintenance requests for the /me endpoint.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the user."
+          },
+          "name": {
+            "type": "string",
+            "description": "Full name of the user."
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address of the user."
+          },
+          "role": {
+            "type": "string",
+            "description": "Role of the user (e.g., RESIDENT, ADMIN, TECHNICIAN).",
+            "enum": [
+              "ADMIN",
+              "TECHNICIAN",
+              "RESIDENT"
+            ]
+          },
+          "residentialComplex": {
+            "$ref": "#/components/schemas/ResidentialComplexDto",
+            "description": "Residential complex info (only for residents)."
+          },
+          "maintenanceRequests": {
+            "type": "array",
+            "description": "List of related maintenance requests.",
+            "items": {
+              "$ref": "#/components/schemas/MaintenanceRequestSummaryDto"
+            }
+          }
+        }
+      },
+      "DeleteResponseDto": {
+        "type": "object",
+        "description": "DTO returned after deleting a resource, containing a message about the operation result.",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message describing the result of the delete operation.",
+            "example": "Residential complex deleted successfully."
+          }
+        }
+      },
+      "CancelResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "description": "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

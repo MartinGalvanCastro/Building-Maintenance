@@ -1,11 +1,8 @@
 spring:
   application:
     name: building-maintenance-backend
-  datasource:
-    url: jdbc:postgresql://localhost:5432/mydatabase
-    username: myuser
-    password: secret
-    driver-class-name: org.postgresql.Driver
+
+# Common config
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,13 +13,13 @@ spring:
 
 security:
   jwt:
-    secret: kJ3fSxv5nZ8pT7cW+eLQ2R1yX5hZ9qU0rM4bN6oP8s=
-    expiration-ms: 3600000
+    secret: 94fd467d998a5d8846585b32d170a4cbc6eaeaf62497730f96110c7ddb3166c3527ebafe
+    expiration-ms: 360000000
     header: Authorization
     prefix: Bearer
   sudo:
-    username: your-admin@example.com
-    password: superSecret123
+    username: a@a.com
+    password: 123456
 
 server:
   servlet:

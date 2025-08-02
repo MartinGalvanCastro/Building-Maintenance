@@ -1,29 +1,29 @@
 package com.martin.buildingmaintenance.security;
 
+import com.martin.buildingmaintenance.domain.model.User;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
 
-
-    @Value("${jwt.expirationMs:3600000}")
+    @Value("${security.jwt.expiration-ms:3600000}")
     private long jwtExpirationMs;
+
+    @Value("${security.jwt.secret}")
+    private String secret;
 
     private Key secretKey;
 
     @PostConstruct
     public void init() {
-        // Ensure the secret is at least 256-bit
-        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateToken(UUID userId, String role) {
@@ -40,11 +40,23 @@ public class JwtTokenProvider {
     }
 
 
-    public Jws<Claims> validateToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token);
+    public String generateToken(User user){
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + jwtExpirationMs);
+
+        return Jwts.builder()
+                .setSubject(user.getId().toString())
+                .claim("role", user.getRole())
+                .claim("name", user.getFullName())
+                .claim("email", user.getEmail())
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
     }
 
+
+    public Jws<Claims> validateToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+    }
 }

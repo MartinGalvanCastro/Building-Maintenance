@@ -1,17 +1,23 @@
 package com.martin.buildingmaintenance.adapters.in.web;
 
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.martin.buildingmaintenance.application.dto.DeleteResponseDto;
 import com.martin.buildingmaintenance.application.dto.ResidentialComplexCommandDto;
 import com.martin.buildingmaintenance.application.dto.ResidentialComplexDto;
+import com.martin.buildingmaintenance.application.exception.NotFoundException;
 import com.martin.buildingmaintenance.application.port.in.AdminManagementService;
 import com.martin.buildingmaintenance.infrastructure.config.SecurityConfig;
 import com.martin.buildingmaintenance.infrastructure.persistence.adapter.BlacklistedTokenAdapter;
 import com.martin.buildingmaintenance.security.JwtTokenProvider;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -19,26 +25,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-import java.util.UUID;
-
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @WebMvcTest(controllers = ResidentialComplexController.class)
 @Import(SecurityConfig.class)
 class ResidentialComplexControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockitoBean
-    private AdminManagementService adminSvc;
-    @MockitoBean
-    private JwtTokenProvider jwtTokenProvider;
-    @MockitoBean
-    private BlacklistedTokenAdapter tokenBlacklist;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private ObjectMapper objectMapper;
+    @MockitoBean private AdminManagementService adminSvc;
+    @MockitoBean private JwtTokenProvider jwtTokenProvider;
+    @MockitoBean private BlacklistedTokenAdapter tokenBlacklist;
 
     private static final String VALID_TOKEN = "valid-token";
     private static final UUID ADMIN_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
@@ -52,7 +46,9 @@ class ResidentialComplexControllerTest {
         void admin_can_list_all_complexes() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
             when(adminSvc.listAllComplexes()).thenReturn(List.of());
-            mockMvc.perform(get("/residential-complexes").header("Authorization", "Bearer " + VALID_TOKEN))
+            mockMvc.perform(
+                            get("/residential-complexes")
+                                    .header("Authorization", "Bearer " + VALID_TOKEN))
                     .andExpect(status().isOk());
             verify(adminSvc).listAllComplexes();
         }
@@ -61,7 +57,9 @@ class ResidentialComplexControllerTest {
         @DisplayName("Non-admin cannot list all complexes")
         void non_admin_cannot_list_all_complexes() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", ADMIN_ID, VALID_TOKEN);
-            mockMvc.perform(get("/residential-complexes").header("Authorization", "Bearer " + VALID_TOKEN))
+            mockMvc.perform(
+                            get("/residential-complexes")
+                                    .header("Authorization", "Bearer " + VALID_TOKEN))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).listAllComplexes();
         }
@@ -69,16 +67,18 @@ class ResidentialComplexControllerTest {
         @Test
         @DisplayName("Unauthenticated cannot list all complexes")
         void unauthenticated_cannot_list_all_complexes() throws Exception {
-            mockMvc.perform(get("/residential-complexes"))
-                    .andExpect(status().isForbidden());
+            mockMvc.perform(get("/residential-complexes")).andExpect(status().isForbidden());
             verify(adminSvc, never()).listAllComplexes();
         }
 
         @Test
         @DisplayName("Invalid token cannot list all complexes")
         void invalid_token_cannot_list_all_complexes() throws Exception {
-            when(jwtTokenProvider.validateToken(anyString())).thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
-            mockMvc.perform(get("/residential-complexes").header("Authorization", "Bearer invalid-token"))
+            when(jwtTokenProvider.validateToken(anyString()))
+                    .thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
+            mockMvc.perform(
+                            get("/residential-complexes")
+                                    .header("Authorization", "Bearer invalid-token"))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).listAllComplexes();
         }
@@ -93,7 +93,9 @@ class ResidentialComplexControllerTest {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
             ResidentialComplexDto dto = mock(ResidentialComplexDto.class);
             when(adminSvc.getComplex(COMPLEX_ID)).thenReturn(dto);
-            mockMvc.perform(get("/residential-complexes/" + COMPLEX_ID).header("Authorization", "Bearer " + VALID_TOKEN))
+            mockMvc.perform(
+                            get("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN))
                     .andExpect(status().isOk());
             verify(adminSvc).getComplex(COMPLEX_ID);
         }
@@ -102,7 +104,9 @@ class ResidentialComplexControllerTest {
         @DisplayName("Non-admin cannot get complex by id")
         void non_admin_cannot_get_complex_by_id() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", ADMIN_ID, VALID_TOKEN);
-            mockMvc.perform(get("/residential-complexes/" + COMPLEX_ID).header("Authorization", "Bearer " + VALID_TOKEN))
+            mockMvc.perform(
+                            get("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).getComplex(any());
         }
@@ -118,8 +122,11 @@ class ResidentialComplexControllerTest {
         @Test
         @DisplayName("Invalid token cannot get complex by id")
         void invalid_token_cannot_get_complex_by_id() throws Exception {
-            when(jwtTokenProvider.validateToken(anyString())).thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
-            mockMvc.perform(get("/residential-complexes/" + COMPLEX_ID).header("Authorization", "Bearer invalid-token"))
+            when(jwtTokenProvider.validateToken(anyString()))
+                    .thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
+            mockMvc.perform(
+                            get("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer invalid-token"))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).getComplex(any());
         }
@@ -132,18 +139,16 @@ class ResidentialComplexControllerTest {
         @DisplayName("Admin can create complex")
         void admin_can_create_complex() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
-            ResidentialComplexCommandDto command = new ResidentialComplexCommandDto(
-                "Test Complex",
-                "123 Main St",
-                "Testville",
-                "12345"
-            );
+            ResidentialComplexCommandDto command =
+                    new ResidentialComplexCommandDto(
+                            "Test Complex", "123 Main St", "Testville", "12345");
             ResidentialComplexDto dto = mock(ResidentialComplexDto.class);
             when(adminSvc.saveComplex(any())).thenReturn(dto);
-            mockMvc.perform(post("/residential-complexes")
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(command)))
+            mockMvc.perform(
+                            post("/residential-complexes")
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(command)))
                     .andExpect(status().isCreated());
             verify(adminSvc).saveComplex(any());
         }
@@ -152,16 +157,14 @@ class ResidentialComplexControllerTest {
         @DisplayName("Non-admin cannot create complex")
         void non_admin_cannot_create_complex() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", ADMIN_ID, VALID_TOKEN);
-            ResidentialComplexCommandDto command = new ResidentialComplexCommandDto(
-                "Test Complex",
-                "123 Main St",
-                "Testville",
-                "12345"
-            );
-            mockMvc.perform(post("/residential-complexes")
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(command)))
+            ResidentialComplexCommandDto command =
+                    new ResidentialComplexCommandDto(
+                            "Test Complex", "123 Main St", "Testville", "12345");
+            mockMvc.perform(
+                            post("/residential-complexes")
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(command)))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).saveComplex(any());
         }
@@ -169,15 +172,13 @@ class ResidentialComplexControllerTest {
         @Test
         @DisplayName("Unauthenticated cannot create complex")
         void unauthenticated_cannot_create_complex() throws Exception {
-            ResidentialComplexCommandDto command = new ResidentialComplexCommandDto(
-                "Test Complex",
-                "123 Main St",
-                "Testville",
-                "12345"
-            );
-            mockMvc.perform(post("/residential-complexes")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(command)))
+            ResidentialComplexCommandDto command =
+                    new ResidentialComplexCommandDto(
+                            "Test Complex", "123 Main St", "Testville", "12345");
+            mockMvc.perform(
+                            post("/residential-complexes")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(command)))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).saveComplex(any());
         }
@@ -185,11 +186,13 @@ class ResidentialComplexControllerTest {
         @Test
         @DisplayName("Invalid token cannot create complex")
         void invalid_token_cannot_create_complex() throws Exception {
-            when(jwtTokenProvider.validateToken(anyString())).thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
-            mockMvc.perform(post("/residential-complexes")
-                    .header("Authorization", "Bearer invalid-token")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{}"))
+            when(jwtTokenProvider.validateToken(anyString()))
+                    .thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
+            mockMvc.perform(
+                            post("/residential-complexes")
+                                    .header("Authorization", "Bearer invalid-token")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{}"))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).saveComplex(any());
         }
@@ -199,13 +202,12 @@ class ResidentialComplexControllerTest {
         void create_complex_missing_attributes_returns_400() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
             // Missing name and city
-            String payload = "{" +
-                    "\"address\": \"123 Main St\"," +
-                    "\"postalCode\": \"12345\"}";
-            mockMvc.perform(post("/residential-complexes")
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(payload))
+            String payload = "{" + "\"address\": \"123 Main St\"," + "\"postalCode\": \"12345\"}";
+            mockMvc.perform(
+                            post("/residential-complexes")
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(payload))
                     .andExpect(status().isBadRequest());
         }
     }
@@ -217,18 +219,16 @@ class ResidentialComplexControllerTest {
         @DisplayName("Admin can update complex")
         void admin_can_update_complex() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
-            ResidentialComplexCommandDto command = new ResidentialComplexCommandDto(
-                "Test Complex",
-                "123 Main St",
-                "Testville",
-                "12345"
-            );
+            ResidentialComplexCommandDto command =
+                    new ResidentialComplexCommandDto(
+                            "Test Complex", "123 Main St", "Testville", "12345");
             ResidentialComplexDto dto = mock(ResidentialComplexDto.class);
             when(adminSvc.updateComplex(eq(COMPLEX_ID), any())).thenReturn(dto);
-            mockMvc.perform(put("/residential-complexes/" + COMPLEX_ID)
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(command)))
+            mockMvc.perform(
+                            put("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(command)))
                     .andExpect(status().isOk());
             verify(adminSvc).updateComplex(eq(COMPLEX_ID), any());
         }
@@ -237,16 +237,14 @@ class ResidentialComplexControllerTest {
         @DisplayName("Non-admin cannot update complex")
         void non_admin_cannot_update_complex() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", ADMIN_ID, VALID_TOKEN);
-            ResidentialComplexCommandDto command = new ResidentialComplexCommandDto(
-                "Test Complex",
-                "123 Main St",
-                "Testville",
-                "12345"
-            );
-            mockMvc.perform(put("/residential-complexes/" + COMPLEX_ID)
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(command)))
+            ResidentialComplexCommandDto command =
+                    new ResidentialComplexCommandDto(
+                            "Test Complex", "123 Main St", "Testville", "12345");
+            mockMvc.perform(
+                            put("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(command)))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).updateComplex(any(), any());
         }
@@ -254,9 +252,10 @@ class ResidentialComplexControllerTest {
         @Test
         @DisplayName("Unauthenticated cannot update complex")
         void unauthenticated_cannot_update_complex() throws Exception {
-            mockMvc.perform(put("/residential-complexes/" + COMPLEX_ID)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{}"))
+            mockMvc.perform(
+                            put("/residential-complexes/" + COMPLEX_ID)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{}"))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).updateComplex(any(), any());
         }
@@ -264,11 +263,13 @@ class ResidentialComplexControllerTest {
         @Test
         @DisplayName("Invalid token cannot update complex")
         void invalid_token_cannot_update_complex() throws Exception {
-            when(jwtTokenProvider.validateToken(anyString())).thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
-            mockMvc.perform(put("/residential-complexes/" + COMPLEX_ID)
-                    .header("Authorization", "Bearer invalid-token")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{}"))
+            when(jwtTokenProvider.validateToken(anyString()))
+                    .thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
+            mockMvc.perform(
+                            put("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer invalid-token")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{}"))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).updateComplex(any(), any());
         }
@@ -277,17 +278,16 @@ class ResidentialComplexControllerTest {
         @DisplayName("Update complex not found returns 404")
         void update_complex_not_found_returns_404() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
-            ResidentialComplexCommandDto command = new ResidentialComplexCommandDto(
-                "Test Complex",
-                "123 Main St",
-                "Testville",
-                "12345"
-            );
-            when(adminSvc.updateComplex(eq(COMPLEX_ID), any())).thenThrow(new com.martin.buildingmaintenance.application.exception.NotFoundException("Complex not found"));
-            mockMvc.perform(put("/residential-complexes/" + COMPLEX_ID)
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(command)))
+            ResidentialComplexCommandDto command =
+                    new ResidentialComplexCommandDto(
+                            "Test Complex", "123 Main St", "Testville", "12345");
+            when(adminSvc.updateComplex(eq(COMPLEX_ID), any()))
+                    .thenThrow(new NotFoundException("Complex not found"));
+            mockMvc.perform(
+                            put("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(command)))
                     .andExpect(status().isNotFound());
         }
 
@@ -296,13 +296,12 @@ class ResidentialComplexControllerTest {
         void update_complex_missing_attributes_returns_400() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
             // Missing address and postalCode
-            String payload = "{" +
-                    "\"name\": \"Test Complex\"," +
-                    "\"city\": \"Testville\"}";
-            mockMvc.perform(put("/residential-complexes/" + COMPLEX_ID)
-                    .header("Authorization", "Bearer " + VALID_TOKEN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(payload))
+            String payload = "{" + "\"name\": \"Test Complex\"," + "\"city\": \"Testville\"}";
+            mockMvc.perform(
+                            put("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(payload))
                     .andExpect(status().isBadRequest());
         }
     }
@@ -316,8 +315,9 @@ class ResidentialComplexControllerTest {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
             DeleteResponseDto dto = mock(DeleteResponseDto.class);
             when(adminSvc.deleteComplex(COMPLEX_ID)).thenReturn(dto);
-            mockMvc.perform(delete("/residential-complexes/" + COMPLEX_ID)
-                    .header("Authorization", "Bearer " + VALID_TOKEN))
+            mockMvc.perform(
+                            delete("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN))
                     .andExpect(status().isOk());
             verify(adminSvc).deleteComplex(COMPLEX_ID);
         }
@@ -326,8 +326,9 @@ class ResidentialComplexControllerTest {
         @DisplayName("Non-admin cannot delete complex")
         void non_admin_cannot_delete_complex() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "RESIDENT", ADMIN_ID, VALID_TOKEN);
-            mockMvc.perform(delete("/residential-complexes/" + COMPLEX_ID)
-                    .header("Authorization", "Bearer " + VALID_TOKEN))
+            mockMvc.perform(
+                            delete("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).deleteComplex(any());
         }
@@ -343,9 +344,11 @@ class ResidentialComplexControllerTest {
         @Test
         @DisplayName("Invalid token cannot delete complex")
         void invalid_token_cannot_delete_complex() throws Exception {
-            when(jwtTokenProvider.validateToken(anyString())).thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
-            mockMvc.perform(delete("/residential-complexes/" + COMPLEX_ID)
-                    .header("Authorization", "Bearer invalid-token"))
+            when(jwtTokenProvider.validateToken(anyString()))
+                    .thenThrow(new io.jsonwebtoken.JwtException("Invalid token"));
+            mockMvc.perform(
+                            delete("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer invalid-token"))
                     .andExpect(status().isForbidden());
             verify(adminSvc, never()).deleteComplex(any());
         }
@@ -354,9 +357,13 @@ class ResidentialComplexControllerTest {
         @DisplayName("Delete complex not found returns 404")
         void delete_complex_not_found_returns_404() throws Exception {
             TestUtils.mockJwtWithRole(jwtTokenProvider, "ADMIN", ADMIN_ID, VALID_TOKEN);
-            doThrow(new com.martin.buildingmaintenance.application.exception.NotFoundException("Complex not found")).when(adminSvc).deleteComplex(COMPLEX_ID);
-            mockMvc.perform(delete("/residential-complexes/" + COMPLEX_ID)
-                    .header("Authorization", "Bearer " + VALID_TOKEN))
+            doThrow(
+                            new NotFoundException("Complex not found"))
+                    .when(adminSvc)
+                    .deleteComplex(COMPLEX_ID);
+            mockMvc.perform(
+                            delete("/residential-complexes/" + COMPLEX_ID)
+                                    .header("Authorization", "Bearer " + VALID_TOKEN))
                     .andExpect(status().isNotFound());
         }
     }

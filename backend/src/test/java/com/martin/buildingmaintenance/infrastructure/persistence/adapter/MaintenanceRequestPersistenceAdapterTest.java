@@ -1,30 +1,26 @@
 package com.martin.buildingmaintenance.infrastructure.persistence.adapter;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.martin.buildingmaintenance.domain.model.MaintenanceRequest;
 import com.martin.buildingmaintenance.infrastructure.mapper.MaintenanceRequestMapper;
 import com.martin.buildingmaintenance.infrastructure.persistence.entity.MaintenanceRequestEntity;
 import com.martin.buildingmaintenance.infrastructure.persistence.repository.JPAMaintenanceRequestRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class MaintenanceRequestPersistenceAdapterTest {
-    @Mock
-    private JPAMaintenanceRequestRepository jpa;
-    @Mock
-    private MaintenanceRequestMapper mapper;
-    @InjectMocks
-    private MaintenanceRequestPersistenceAdapter adapter;
+    @Mock private JPAMaintenanceRequestRepository jpa;
+    @Mock private MaintenanceRequestMapper mapper;
+    @InjectMocks private MaintenanceRequestPersistenceAdapter adapter;
 
     @Test
     void findByResidentId_returnsMappedList() {

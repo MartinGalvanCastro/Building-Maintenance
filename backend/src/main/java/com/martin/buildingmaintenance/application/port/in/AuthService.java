@@ -6,5 +6,8 @@ import com.martin.buildingmaintenance.application.dto.LogOutResponseDto;
 
 public interface AuthService {
     LogInResultDto authenticate(CredentialsDto credentialsDto);
+
     LogOutResponseDto logout(String token);
+
+    void validateToken(String token);
 }

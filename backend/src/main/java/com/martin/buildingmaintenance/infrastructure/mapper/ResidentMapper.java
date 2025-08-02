@@ -12,10 +12,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses={
-                ResidentialComplexMapper.class
-        }
-)
+        uses = {ResidentialComplexMapper.class})
 public interface ResidentMapper {
 
     @Mapping(target = "role", ignore = true)
@@ -24,10 +21,7 @@ public interface ResidentMapper {
     @InheritInverseConfiguration
     ResidentEntity toEntity(Resident d);
 
-
     ResidentSummaryDto toSummaryDto(Resident d);
 
-
     ResidentDto toDto(Resident d);
-
 }

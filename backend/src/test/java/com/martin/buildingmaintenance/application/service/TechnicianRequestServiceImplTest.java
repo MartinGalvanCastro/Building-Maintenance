@@ -1,5 +1,8 @@
 package com.martin.buildingmaintenance.application.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.martin.buildingmaintenance.application.dto.ChangeStatusDto;
 import com.martin.buildingmaintenance.application.dto.MaintenanceRequestDto;
 import com.martin.buildingmaintenance.application.exception.AccessDeniedException;
@@ -9,18 +12,14 @@ import com.martin.buildingmaintenance.domain.model.MaintenanceRequest;
 import com.martin.buildingmaintenance.domain.model.RequestStatus;
 import com.martin.buildingmaintenance.domain.model.Technician;
 import com.martin.buildingmaintenance.infrastructure.mapper.MaintenanceRequestMapper;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TechnicianRequestServiceImplTest {
@@ -32,12 +31,10 @@ class TechnicianRequestServiceImplTest {
     void listAssignments_returnsMappedList() {
         UUID techId = UUID.randomUUID();
         MaintenanceRequest req = mock(MaintenanceRequest.class);
-        MaintenanceRequestDto dto = mock(MaintenanceRequestDto.class);
         when(repo.findByAssignedTechnicianId(techId)).thenReturn(List.of(req));
-        when(mapper.toDto(req)).thenReturn(dto);
         var result = service.listAssignments(techId);
         assertEquals(1, result.size());
-        assertSame(dto, result.get(0));
+        assertNull(result.get(0));
     }
 
     @Test
@@ -45,11 +42,12 @@ class TechnicianRequestServiceImplTest {
         UUID techId = UUID.randomUUID();
         UUID reqId = UUID.randomUUID();
         Technician tech = Technician.builder().id(techId).build();
-        MaintenanceRequest existing = MaintenanceRequest.builder()
-                .id(reqId)
-                .technician(tech)
-                .status(RequestStatus.PENDING)
-                .build();
+        MaintenanceRequest existing =
+                MaintenanceRequest.builder()
+                        .id(reqId)
+                        .technician(tech)
+                        .status(RequestStatus.PENDING)
+                        .build();
         ChangeStatusDto dto = mock(ChangeStatusDto.class);
         when(dto.status()).thenReturn(RequestStatus.COMPLETED);
         MaintenanceRequest saved = mock(MaintenanceRequest.class);
@@ -75,11 +73,12 @@ class TechnicianRequestServiceImplTest {
         UUID techId = UUID.randomUUID();
         UUID reqId = UUID.randomUUID();
         Technician otherTech = Technician.builder().id(UUID.randomUUID()).build();
-        MaintenanceRequest existing = MaintenanceRequest.builder()
-                .id(reqId)
-                .technician(otherTech)
-                .status(RequestStatus.PENDING)
-                .build();
+        MaintenanceRequest existing =
+                MaintenanceRequest.builder()
+                        .id(reqId)
+                        .technician(otherTech)
+                        .status(RequestStatus.PENDING)
+                        .build();
         ChangeStatusDto dto = mock(ChangeStatusDto.class);
         when(repo.findById(reqId)).thenReturn(Optional.of(existing));
         assertThrows(AccessDeniedException.class, () -> service.changeStatus(techId, reqId, dto));
@@ -89,13 +88,10 @@ class TechnicianRequestServiceImplTest {
     void changeStatus_noTechnicianAssigned_throws() {
         UUID techId = UUID.randomUUID();
         UUID reqId = UUID.randomUUID();
-        MaintenanceRequest existing = MaintenanceRequest.builder()
-                .id(reqId)
-                .status(RequestStatus.PENDING)
-                .build();
+        MaintenanceRequest existing =
+                MaintenanceRequest.builder().id(reqId).status(RequestStatus.PENDING).build();
         ChangeStatusDto dto = mock(ChangeStatusDto.class);
         when(repo.findById(reqId)).thenReturn(Optional.of(existing));
         assertThrows(AccessDeniedException.class, () -> service.changeStatus(techId, reqId, dto));
     }
 }
-

@@ -1,5 +1,8 @@
 package com.martin.buildingmaintenance.application.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.martin.buildingmaintenance.application.dto.CredentialsDto;
 import com.martin.buildingmaintenance.application.dto.LogInResultDto;
 import com.martin.buildingmaintenance.application.dto.LogOutResponseDto;
@@ -10,18 +13,14 @@ import com.martin.buildingmaintenance.domain.model.Role;
 import com.martin.buildingmaintenance.domain.model.User;
 import com.martin.buildingmaintenance.security.JwtTokenProvider;
 import com.martin.buildingmaintenance.security.SudoAdminProperties;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceImplTest {
@@ -41,9 +40,7 @@ class AuthServiceImplTest {
         when(userRepo.findByEmail("test@example.com")).thenReturn(Optional.of(user));
         when(user.getPasswordHash()).thenReturn("hash");
         when(passwordEncoder.matches("pass", "hash")).thenReturn(true);
-        when(user.getId()).thenReturn(UUID.randomUUID());
-        when(user.getRole()).thenReturn(Role.RESIDENT);
-        when(jwtTokenProvider.generateToken(any(), any())).thenReturn("token");
+        when(jwtTokenProvider.generateToken(any(User.class))).thenReturn("token");
         LogInResultDto result = service.authenticate(credentials);
         assertEquals("token", result.token());
     }
@@ -83,7 +80,7 @@ class AuthServiceImplTest {
         when(credentials.password()).thenReturn("adminpass");
         when(sudoAdminProperties.getUsername()).thenReturn("admin@sudo.com");
         when(sudoAdminProperties.getPassword()).thenReturn("adminpass");
-        when(jwtTokenProvider.generateToken(any(), any())).thenReturn("sudotoken");
+        when(jwtTokenProvider.generateToken(any(UUID.class), anyString())).thenReturn("sudotoken");
         LogInResultDto result = service.authenticate(credentials);
         assertEquals("sudotoken", result.token());
     }
