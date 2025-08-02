@@ -3,7 +3,7 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MartinGalvanCastro/Building-Maintenance)
 
-Wiki Docs: https://deepwiki.com/MartinGalvanCastro/Building-Maintenance
+Wiki Docs with Architecture and Design details: https://deepwiki.com/MartinGalvanCastro/Building-Maintenance
 
 ---
 
