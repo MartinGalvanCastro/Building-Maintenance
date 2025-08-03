@@ -62,6 +62,8 @@ You can change these in `backend/src/main/resources/application.yaml` under `sec
 
 **Note:** To log in as a Technician or Resident, their user accounts must first be created by an Admin. Use the Admin credentials above to create new Technician or Resident users via the app interface/Swagger UI/ HTTP Calls (Postman or Curl).
 
+- Resident need to be linked to a residential complex
+
 ---
 
 ## Useful Commands
